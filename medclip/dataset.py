@@ -27,12 +27,8 @@ from .prompts import process_class_prompts, process_class_prompts_for_tuning
 from .prompts import generate_chexpert_class_prompts
 from . import constants
 
-from transformers.image_transforms import (
-    convert_to_rgb,
-    get_resize_output_image_size,
-    resize,
-    to_channel_dimension_format,
-)
+from transformers.image_transforms import convert_to_rgb
+
 
 class MedCLIPFeatureExtractor(CLIPImageProcessor):
     def __init__(self, 
