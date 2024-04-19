@@ -12,7 +12,7 @@ from torch import nn
 from torchvision import transforms
 
 from transformers import AutoTokenizer
-from transformers import CLIPFeatureExtractor, CLIPProcessor
+from transformers import CLIPImageProcessor, CLIPProcessor
 from transformers.utils import TensorType
 from transformers.feature_extraction_utils import BatchFeature
 from transformers.image_utils import is_torch_tensor
@@ -27,7 +27,14 @@ from .prompts import process_class_prompts, process_class_prompts_for_tuning
 from .prompts import generate_chexpert_class_prompts
 from . import constants
 
-class MedCLIPFeatureExtractor(CLIPFeatureExtractor):
+from transformers.image_transforms import (
+    convert_to_rgb,
+    get_resize_output_image_size,
+    resize,
+    to_channel_dimension_format,
+)
+
+class MedCLIPFeatureExtractor(CLIPImageProcessor):
     def __init__(self, 
         do_resize=True, 
         size=224, 
@@ -102,7 +109,7 @@ class MedCLIPFeatureExtractor(CLIPFeatureExtractor):
 
         # transformations (convert rgb + resizing + center cropping + normalization)
         if self.do_convert_rgb:
-            images = [self.convert_rgb(image) for image in images]
+            images = [convert_rgb(image) for image in images]
 
         if self.do_pad_square:
             images = [self.pad_img(image,min_size=self.size) for image in images]
