@@ -108,7 +108,7 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
             images = [convert_to_rgb(image) for image in images]
 
         if self.do_pad_square:
-            images = [self.pad_img(image,min_size=self.size) for image in images]
+            images = [self.pad_img(image,min_size=self.size['shortest_edge']) for image in images]
         
         if self.do_resize and self.size is not None and self.resample is not None:
             images = [
