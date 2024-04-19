@@ -182,6 +182,8 @@ class MedCLIPModel(nn.Module):
             print('\n Download pretrained model from:', pretrained_url)
         
         state_dict = torch.load(os.path.join(input_dir, constants.WEIGHTS_NAME))
+        if 'text_model.model.embeddings.position_ids' in state_dict:
+            del state_dict['text_model.model.embeddings.position_ids']
         self.load_state_dict(state_dict)
         print('load model weight from:', input_dir)
 
