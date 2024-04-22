@@ -28,6 +28,7 @@ from .prompts import generate_chexpert_class_prompts
 from . import constants
 
 from transformers.image_transforms import convert_to_rgb
+from transformers.image_utils import to_numpy_array
 
 
 class MedCLIPFeatureExtractor(CLIPImageProcessor):
@@ -106,7 +107,9 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
         # transformations (convert rgb + resizing + center cropping + normalization)
         if self.do_convert_rgb:
             images = [convert_to_rgb(image) for image in images]
-
+        
+        images = [to_numpy_array(image) for image in images]
+        
         if self.do_pad_square:
             images = [self.pad_img(image,min_size=self.size['shortest_edge']) for image in images]
         
