@@ -132,12 +132,11 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
             images_.append(image)
         images = images_
 
-        if input_data_format is None:
-            # We assume that all images have the same channel dimension format.
-            input_data_format = infer_channel_dimension_format(images[0])
+        # We assume that all images have the same channel dimension format.
+        input_data_format = infer_channel_dimension_format(images[0])
         
         images = [
-            to_channel_dimension_format(image, data_format=ChannelDimension.FIRST, input_channel_dim=input_data_format) for image in images
+            to_channel_dimension_format(image, ChannelDimension.FIRST, input_channel_dim=input_data_format) for image in images
         ]
         # return as BatchFeature
         data = {"pixel_values": images}
