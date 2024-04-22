@@ -27,8 +27,8 @@ from .prompts import process_class_prompts, process_class_prompts_for_tuning
 from .prompts import generate_chexpert_class_prompts
 from . import constants
 
-from transformers.image_transforms import convert_to_rgb
-from transformers.image_utils import to_numpy_array
+from transformers.image_transforms import convert_to_rgb, to_channel_dimension_format
+from transformers.image_utils import to_numpy_array, infer_channel_dimension_format, ChannelDimension
 
 
 class MedCLIPFeatureExtractor(CLIPImageProcessor):
@@ -113,6 +113,7 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
         if self.do_pad_square:
             images = [self.pad_img(image,min_size=self.size['shortest_edge']) for image in images]
         images = [to_numpy_array(image) for image in images]
+
         if self.do_resize and self.size is not None and self.resample is not None:
             images = [
                 self.resize(image=image, size=self.size, resample=self.resample)
@@ -131,6 +132,13 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
             images_.append(image)
         images = images_
 
+        if input_data_format is None:
+            # We assume that all images have the same channel dimension format.
+            input_data_format = infer_channel_dimension_format(images[0])
+        
+        images = [
+            to_channel_dimension_format(image, data_format=ChannelDimension.FIRST, input_channel_dim=input_data_format) for image in images
+        ]
         # return as BatchFeature
         data = {"pixel_values": images}
         encoded_inputs = BatchFeature(data=data, tensor_type=return_tensors)
