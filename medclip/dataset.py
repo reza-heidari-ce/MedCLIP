@@ -108,11 +108,11 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
         if self.do_convert_rgb:
             images = [convert_to_rgb(image) for image in images]
         
-        images = [to_numpy_array(image) for image in images]
+        
         
         if self.do_pad_square:
             images = [self.pad_img(image,min_size=self.size['shortest_edge']) for image in images]
-        
+        images = [to_numpy_array(image) for image in images]
         if self.do_resize and self.size is not None and self.resample is not None:
             images = [
                 self.resize(image=image, size=self.size, resample=self.resample)
@@ -142,7 +142,7 @@ class MedCLIPFeatureExtractor(CLIPImageProcessor):
         '''
         x, y = img.size
         size = max(min_size, x, y)
-        new_im = Image.new('L', (size, size), fill_color)
+        new_im = Image.new('RGB', (size, size), fill_color)
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         return new_im
 
@@ -229,7 +229,7 @@ class ImageTextContrastiveDataset(Dataset):
         '''
         x, y = img.size
         size = max(min_size, x, y)
-        new_im = Image.new('L', (size, size), fill_color)
+        new_im = Image.new('RGB', (size, size), fill_color)
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         return new_im
 
@@ -414,7 +414,7 @@ class ZeroShotImageDataset(Dataset):
         '''
         x, y = img.size
         size = max(min_size, x, y)
-        new_im = Image.new('L', (size, size), fill_color)
+        new_im = Image.new('RGB', (size, size), fill_color)
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         return new_im
 
@@ -503,7 +503,7 @@ class SuperviseImageDataset(Dataset):
         '''
         x, y = img.size
         size = max(min_size, x, y)
-        new_im = Image.new('L', (size, size), fill_color)
+        new_im = Image.new('RGB', (size, size), fill_color)
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         return new_im
 
@@ -582,7 +582,7 @@ class PromptTuningImageDataset(Dataset):
         '''
         x, y = img.size
         size = max(min_size, x, y)
-        new_im = Image.new('L', (size, size), fill_color)
+        new_im = Image.new('RGB', (size, size), fill_color)
         new_im.paste(img, (int((size - x) / 2), int((size - y) / 2)))
         return new_im
 
